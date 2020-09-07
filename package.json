@@ -1,0 +1,19 @@
+{
+  "name": "sls-cron-enviroments",
+  "version": "1.0.0",
+  "description": "",
+  "main": "handler.js",
+  "scripts": {
+    "invoke-local-qa": "sls invoke local --stage=qa -f commit-message-scheduler --logger",
+    "invoke-local-prod": "sls invoke local --stage=prod -f commit-message-scheduler --logger"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "aws-sdk": "^2.747.0",
+    "axios": "^0.20.0",
+    "cheerio": "^1.0.0-rc.3",
+    "env-var": "^6.3.0",
+    "uuid": "^8.3.0"
+  }
+}

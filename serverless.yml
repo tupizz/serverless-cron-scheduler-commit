@@ -1,0 +1,32 @@
+service: sls-cron-enviroments
+
+frameworkVersion: '1'
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  stage: ${opt:stage, "qa"}
+  environment:
+    ${file(./config/env.${self:provider.stage}.json)}
+  iamRoleStatements:
+    ${file(./config/serverless/db.iam.role.yml)}
+
+custom:
+  schedulerRate: rate(1 minute)
+  enabled: true
+  tableName: ${self:provider.environment.DbTableName}
+  dbWriteCapacity: ${self:provider.environment.DbWriteCapacityUnits}
+  dbReadCapacity: ${self:provider.environment.DbReadCapacityUnits}
+
+resources:
+  Resources:
+    ${file(./config/serverless/resources/dynamo.hero.table.yml)}
+
+functions:
+  commit-message-scheduler:
+    handler: src/handler.scheduler
+    events:
+      - schedule:
+          rate: ${self:custom.schedulerRate}
+          name: schedule-commit-message-${self:provider.stage}
+          enabled: ${self:custom.enabled}
